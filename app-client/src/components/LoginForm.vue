@@ -1,30 +1,33 @@
 <template>
- <div>
+  <div class="container d-flex justify-content-center">
       <form @submit.prevent="submitForm" class="form">
-
-       <div>
-          <label for="username">id:</label>
-          <input id="username" type="text" v-model="username" />
-          <p class="validation-text">
+        <div class="input-group mb-3">
+          <input type="text" id="username" class="form-control" placeholder="Recipient's username" v-model="username"
+          @focusout="isPopup">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">@example.com</span>
+          </div>
+          <!--<p class="validation-text">
             <span class="warning" v-if="!isUsernameValid && username">
               Please enter an email address
             </span>
-          </p>
+          </p>-->
         </div>
-        <div>
-          <label for="password">pw:</label>
-          <input id="password" type="text" v-model="password" />
+
+        <div class="input-group mb-3">
+          <input type="password" id="password" class="form-control" placeholder="Password" v-model="password">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">validation+</span>
+          </div>
         </div>
-        <button
+        <button class="btn btn-primary btn-lg btn-block"
           :disabled="!isUsernameValid || !password"
           type="submit"
-          class="btn"
           :class="!isUsernameValid || !password ? 'disabled' : null"
         >
-          로그인
+          Sign in
         </button>
       </form>
-      <p class="log">{{ logMessage }}</p>
   </div>
 </template>
 
@@ -38,6 +41,7 @@ export default {
       password: '',
       // log
       logMessage: '',
+      counter:0,
     };
   },
   computed: {
@@ -62,13 +66,23 @@ export default {
         this.initForm();
       }
     },
-    makeToast(variant = null) {
-        this.$bvToast.toast('Toast body content', {
-          title: `Variant ${variant || 'default'}`,
+    toast(toaster, append = false, variant, str) {
+        this.counter++
+        this.$bvToast.toast(`${str}`, {
+          title: `Warning -`,
+          toaster: toaster,
+          solid: true,
+          appendToast: append,
           variant: variant,
-          solid: true
+          //auto-hide-delay: 1000
         })
-      },
+    },
+    isPopup(){
+      if(!validateEmail(this.username) && this.username){
+        this.$bvToast.hide();
+        this.toast('b-toaster-bottom-center', true, 'danger', 'Please enter an email address');
+      }
+    },
     initForm() {
       this.username = '';
       this.password = '';

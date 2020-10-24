@@ -1,28 +1,37 @@
 <template>
-  <div class="contents">
+  <div class="container d-flex justify-content-center">
     <div class="form-wrapper form-wrapper-sm">
       <form @submit.prevent="submitForm" class="form">
-        <div>
-          <label for="username">id: </label>
-          <input id="username" type="text" v-model="username" />
+        <div class="input-group mb-3">
+          <input type="text" id="username" class="form-control" placeholder="Recipient's username" v-model="username"
+          @focusout="isPopup">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">@example.com</span>
+          </div>
         </div>
-        <div>
-          <label for="password">pw: </label>
-          <input id="password" type="text" v-model="password" />
-        </div>
-        <div>
-          <label for="nickname">nickname: </label>
-          <input id="nickname" type="text" v-model="nickname" />
-        </div>
-        <button type="submit" class="btn">회원 가입</button>
+        <div class="input-group mb-3">
+          <input type="password" id="password" class="form-control" placeholder="Password" v-model="password">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">validation+</span>
+          </div>
+        </div>  
+        <div class="input-group mb-3">
+          <input type="text" id="nickname" class="form-control" placeholder="Nickname" v-model="nickname">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">validation+</span>
+          </div>
+        </div> 
+        <button class="btn btn-primary btn-lg btn-block">
+          Sign up
+        </button>
       </form>
-      <p class="log">{{ logMessage }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import { registerUser } from '@/api/auth';
+import { validateEmail } from '@/utils/validation';
 export default {
   data() {
     return {
@@ -30,9 +39,12 @@ export default {
       username: '',
       password: '',
       nickname: '',
-      // log
-      logMessage: '',
     };
+  },
+  computed: {
+    isUsernameValid() {
+      return validateEmail(this.username);
+    },
   },
   methods: {
     async submitForm() {
@@ -43,8 +55,25 @@ export default {
       };
       const { data } = await registerUser(userData);
       console.log(data.username);
-      this.logMessage = `${data.username} 님이 가입되었습니다`;
+      //this.logMessage = `${data.username} 님이 가입되었습니다`;
       this.initForm();
+    },
+    toast(toaster, append = false, variant, str) {
+        this.counter++
+        this.$bvToast.toast(`${str}`, {
+          title: `Warning -`,
+          toaster: toaster,
+          solid: true,
+          appendToast: append,
+          variant: variant,
+          //auto-hide-delay: 1000
+        })
+    },
+    isPopup(){
+      if(!validateEmail(this.username) && this.username){
+        this.$bvToast.hide();
+        this.toast('b-toaster-bottom-center', true, 'danger', 'Please enter an email address');
+      }
     },
     initForm() {
       this.username = '';

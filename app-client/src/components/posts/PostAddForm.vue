@@ -1,23 +1,25 @@
 <template>
-  <div class="contents">
-    <h1 class="page-header">Create Post</h1>
+  <div class="container">
+    <div class="alert alert-info" role="alert">
+    Create Post
+    </div>
     <div class="form-wrapper">
       <form class="form" @submit.prevent="submitForm">
-        <div>
-          <label for="title">Title:</label>
-          <input id="title" type="text" v-model="title" />
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="title" class="form-control" id="title" v-model="title">
         </div>
-        <div>
-          <label for="contents">Contents:</label>
-          <textarea id="contents" type="text" rows="5" v-model="contents" />
-          <p
+        <div class="form-group">
+            <label for="contents">Contents</label>
+            <textarea class="form-control" id="contents" rows="5" v-model="contents"></textarea>
+            <small id="contents"
             v-if="!isContentsValid"
-            class="validation-text warning isContentTooLong"
+            class="form-text text-muted"
           >
-            Contents length must be less than 250
-          </p>
-        </div>
-        <button type="submit" class="btn">Create</button>
+            Contents length must be less than 200
+          </small>
+        </div>  
+        <button type="submit" class="btn btn-primary">Create</button>
       </form>
       <p class="log">
         {{ logMessage }}
